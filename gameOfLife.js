@@ -7,7 +7,7 @@ var Game = (function() {
   var ticksInput = document.getElementsByClassName('js-ticks')[0];
   var worldSize = document.getElementsByClassName('js-worldSize')[0];
   
-  var ticks = 10;
+  var ticks = 0;
   var stop = false;
   var world;
 
