@@ -3,6 +3,12 @@
   <head>
     <title>Game of HTML life</title>
     <style type="text/css" rel="stylesheet">
+      table {
+        margin-bottom: 20px;
+      }
+      div {
+        padding: 10px 0;
+      }
       td {
         width: 15px;
         height: 15px;
@@ -17,9 +23,21 @@
     </style>
   </head>
   <body>
-    <table class="js-board">
-    </table>
-    <button class="js-play">Play</button>
+    <div>
+      <table class="js-board">
+      </table>
+      World size: (max: 99) <br/>
+      <input pattern="\d*" maxlength="2" class="js-worldSize"/>
+    </div>
+    <div>
+      Ticks: <br/>
+      <input type="number" class="js-ticks"/>
+    </div>
+    <div>
+      <button class="js-play">Play</button>
+      <button class="js-stop">Stop</button>
+      <button class="js-reset">Reset</button>
+    </div>
     <script type="text/javascript" src="gameOfLife.js"></script>
   </body>
 </html>

@@ -1,16 +1,14 @@
 var Game = (function() {
   var domBoard = document.getElementsByClassName('js-board')[0];
   var playBtn = document.getElementsByClassName('js-play')[0];
-  var ticks = 50;
-  var world = [
-    [0, 1, 0],
-    [0, 1, 0],
-    [0, 1, 0]
-  ];
-
-  function setTicks(num) {
-    ticks = num;
-  }
+  var resetBtn = document.getElementsByClassName('js-reset')[0];
+  var stopBtn = document.getElementsByClassName('js-stop')[0];
+  var ticksInput = document.getElementsByClassName('js-ticks')[0];
+  var worldSize = document.getElementsByClassName('js-worldSize')[0];
+  
+  var ticks = 10;
+  var stop = false;
+  var world;
 
   function createWorld(y,x) {
     var newWorld = [];
@@ -23,24 +21,53 @@ var Game = (function() {
     }
     world = newWorld;
     drawWorld();
-    setListeners();
   };
 
   function setListeners() {
     domBoard.addEventListener('click', userSeed, false);
-    playBtn.addEventListener('click', function(){
-      htmlWorldToJsWorld();
-      play(ticks);
-    }, false);
-  }
+    worldSize.addEventListener('input', setWorldSize, false);
+    playBtn.addEventListener('click', startPlay, false);
+    resetBtn.addEventListener('click', resetWorld, false);
+    stopBtn.addEventListener('click', stopTicking, false);
+    ticksInput.addEventListener('input', setTicks, false);
 
-  function userSeed(e) {
-    var elementClicked = e.target;
-    if (elementClicked.tagName != 'TD') return;
-    if (e.target.className == 'dead') {
-      e.target.className = 'live';
-    } else {
-      e.target.className = 'dead';
+    function startPlay() {
+      if (ticks <= 0) return;
+      htmlWorldToJsWorld();
+      play();
+    }
+
+    function setTicks(e) {
+      ticks = e.target.value;
+    }
+
+    function userSeed(e) {
+      var elementClicked = e.target;
+      if (elementClicked.tagName != 'TD') return;
+      if (e.target.className == 'dead') {
+        e.target.className = 'live';
+      } else {
+        e.target.className = 'dead';
+      }
+    }
+
+    function setWorldSize(e) {
+      var num = e.target.value;
+      createWorld(num, num);
+    }
+
+    function resetWorld() {
+      stop = true;
+      world.forEach(function(column, columnIndex){
+        column.forEach(function(cell, cellIndex){
+          world[columnIndex][cellIndex] = 0;
+        });
+      });
+      drawWorld();
+    }
+
+    function stopTicking() {
+      stop = true;
     }
   }
 
@@ -63,17 +90,27 @@ var Game = (function() {
     world = newWorld;
   }
 
-  function play(ticks) {
-    for (let i=0; i<ticks; i++) {
-      setTimeout(function(){
-        world = tick();
-        drawWorld();
-      }, i * 200);
+  function play() {
+    stop = false;
+    var playGame = setInterval(function() {
+      if(stop || ticks == 1) {
+        clearInterval(playGame);
+        stop = undefined;
+      };
+
+      world = tick();
+      drawWorld();
+
+      ticks--;
+      updateHTMLTicks();
+    }, 200);
+
+    function updateHTMLTicks() {
+      ticksInput.value = ticks;
     }
-  };
+  }
 
   function drawWorld() {
-    var domBoard = document.getElementsByClassName('js-board')[0];
     domBoard.innerHTML = '';
     
     world.forEach(function drawRow(row) {
@@ -139,11 +176,9 @@ var Game = (function() {
   };
 
   return {
-    setTicks: setTicks,
-    createWorld: createWorld
+    setListeners: setListeners
   };
 })();
 
-Game.setTicks(100);
-Game.createWorld(40,40);
+Game.setListeners();
 
