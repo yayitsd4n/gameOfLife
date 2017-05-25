@@ -1,7 +1,8 @@
 var Game = (function() {
   var domBoard = document.getElementsByClassName('js-board')[0];
   var playBtn = document.getElementsByClassName('js-play')[0];
-  var resetBtn = document.getElementsByClassName('js-reset')[0];
+  var resetWorldBtn = document.getElementsByClassName('js-resetWorld')[0];
+  var resetTicksBtn = document.getElementsByClassName('js-resetTicks')[0];
   var stopBtn = document.getElementsByClassName('js-stop')[0];
   var ticksInput = document.getElementsByClassName('js-ticks')[0];
   var worldSize = document.getElementsByClassName('js-worldSize')[0];
@@ -27,7 +28,8 @@ var Game = (function() {
     domBoard.addEventListener('click', userSeed, false);
     worldSize.addEventListener('input', setWorldSize, false);
     playBtn.addEventListener('click', startPlay, false);
-    resetBtn.addEventListener('click', resetWorld, false);
+    resetWorldBtn.addEventListener('click', resetWorld, false);
+    resetTicksBtn.addEventListener('click', resetTicks, false);
     stopBtn.addEventListener('click', stopTicking, false);
     ticksInput.addEventListener('input', setTicks, false);
 
@@ -57,7 +59,6 @@ var Game = (function() {
     }
 
     function resetWorld() {
-      stopTicking();
       world.forEach(function(column, columnIndex){
         column.forEach(function(cell, cellIndex){
           world[columnIndex][cellIndex] = 0;
@@ -66,8 +67,17 @@ var Game = (function() {
       drawWorld();
     }
 
+    function resetTicks() {
+      if (stop == false) {
+        ticks = 1;
+      } else {
+        ticks = 0;
+      }
+      updateHTMLTicks();
+    }
+
     function stopTicking() {
-      ticks = 1;
+      stop = true;
     }
   }
 
@@ -104,10 +114,10 @@ var Game = (function() {
       ticks--;
       updateHTMLTicks();
     }, 200);
+  }
 
-    function updateHTMLTicks() {
-      ticksInput.value = ticks;
-    }
+  function updateHTMLTicks() {
+    ticksInput.value = ticks;
   }
 
   function drawWorld() {
