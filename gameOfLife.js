@@ -57,7 +57,7 @@ var Game = (function() {
     }
 
     function resetWorld() {
-      stop = true;
+      stopTicking();
       world.forEach(function(column, columnIndex){
         column.forEach(function(cell, cellIndex){
           world[columnIndex][cellIndex] = 0;
@@ -67,7 +67,7 @@ var Game = (function() {
     }
 
     function stopTicking() {
-      stop = true;
+      ticks = 1;
     }
   }
 
